@@ -5,6 +5,14 @@ import PackageDescription
 
 let package = Package(
     name: "LocalChatLib",
+    platforms: [
+        // min versions for Observation framework
+        .iOS(.v17),
+        .macOS(.v14),
+        .tvOS(.v17),
+        .watchOS(.v10),
+        .visionOS(.v1)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
@@ -13,6 +21,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/ml-explore/mlx-swift-lm/", branch: "main"),
         .package(url: "https://github.com/ml-explore/mlx-swift", from: "0.10.0")
     ],
     targets: [
@@ -21,6 +30,7 @@ let package = Package(
         .target(
             name: "LocalChatLib",
             dependencies: [
+                .product(name: "MLXLLM", package: "mlx-swift-lm"),
                 .product(name: "MLX", package: "mlx-swift"),
                 .product(name: "MLXNN", package: "mlx-swift"),
                 .product(name: "MLXOptimizers", package: "mlx-swift")
