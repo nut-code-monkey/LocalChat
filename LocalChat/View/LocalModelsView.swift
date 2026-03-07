@@ -11,7 +11,6 @@ import LocalChatLib
 struct LocalModelsView: View {
     var body: some View {
         List(ModelLoader.allModels) { loader in
-
             HStack {
                 Text(loader.name)
 
@@ -23,9 +22,16 @@ struct LocalModelsView: View {
                 }
             }
 
+            if loader.isLoaded {
+                ProgressView("Loading...",
+                             value: loader.progress,
+                             total: 1)
+                .progressViewStyle(.linear)
+            }
         }
     }
 }
+
 
 #Preview {
     LocalModelsView()
