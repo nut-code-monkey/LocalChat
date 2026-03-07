@@ -1,5 +1,5 @@
 //
-//  ModelLoadingView.swift
+//  ModelLoaderProgressView.swift
 //  LocalChat
 //
 //  Created by Максим Лунін on 07.03.2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ModelLoadingView: View {
+struct ModelLoaderProgressView: View {
     @State var name: String
     @Binding var progress: Double
     var body: some View {
@@ -22,9 +22,18 @@ struct ModelLoadingView: View {
 }
 
 #Preview {
-    ModelLoadingView(name: "Test/Model", progress: .constant(0))
+    ModelLoaderProgressView(
+        name: "Test/Model",
+        progress: .constant(0)
+    )
 
-    ModelLoadingView(name: "Test/Model", progress: .constant(0.5))
+    ModelLoaderProgressView(
+        name: "Test/Model",
+        progress: .constant(0.5)
+    )
 
-    ModelLoadingView(name: "Test/Model", progress: .constant(1))
+    ModelLoaderProgressView(
+        name: "Test/Model",
+        progress: .constant(1)
+    )
 }

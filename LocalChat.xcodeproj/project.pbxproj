@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		505A47802F5C9F1200F28C7F /* LocalChatLib in Frameworks */ = {isa = PBXBuildFile; productRef = 505A477F2F5C9F1200F28C7F /* LocalChatLib */; };
+		505A47872F5CB47500F28C7F /* SpeziChat in Frameworks */ = {isa = PBXBuildFile; productRef = 505A47862F5CB47500F28C7F /* SpeziChat */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				505A47872F5CB47500F28C7F /* SpeziChat in Frameworks */,
 				505A47802F5C9F1200F28C7F /* LocalChatLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -126,6 +128,7 @@
 			name = LocalChat;
 			packageProductDependencies = (
 				505A477F2F5C9F1200F28C7F /* LocalChatLib */,
+				505A47862F5CB47500F28C7F /* SpeziChat */,
 			);
 			productName = LocalChat;
 			productReference = 505A473C2F5C854100F28C7F /* LocalChat.app */;
@@ -211,6 +214,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				505A477E2F5C9F1200F28C7F /* XCLocalSwiftPackageReference "LocalChatLib" */,
+				505A47852F5CB47500F28C7F /* XCRemoteSwiftPackageReference "SpeziChat" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 505A473D2F5C854100F28C7F /* Products */;
@@ -412,9 +416,21 @@
 				DEVELOPMENT_TEAM = 28EY834K86;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = YES;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Required for chat speech recognition";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Required for chat speech recognition";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -456,9 +472,21 @@
 				DEVELOPMENT_TEAM = 28EY834K86;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = YES;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
+				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Required for chat speech recognition";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Required for chat speech recognition";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -640,10 +668,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		505A47852F5CB47500F28C7F /* XCRemoteSwiftPackageReference "SpeziChat" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/StanfordSpezi/SpeziChat";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		505A477F2F5C9F1200F28C7F /* LocalChatLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LocalChatLib;
+		};
+		505A47862F5CB47500F28C7F /* SpeziChat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 505A47852F5CB47500F28C7F /* XCRemoteSwiftPackageReference "SpeziChat" */;
+			productName = SpeziChat;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
