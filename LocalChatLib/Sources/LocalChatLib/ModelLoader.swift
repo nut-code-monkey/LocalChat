@@ -60,6 +60,10 @@ public class ModelLoader: Identifiable {
         return LocalChat(session: session)
     }
 
+    public func load() {
+        Task { try? await modelContainer() }
+    }
+
     // TODO: - model container caching
     private func modelContainer() async throws -> ModelContainer {
         switch self.state {

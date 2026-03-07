@@ -14,7 +14,7 @@ struct ModelLoaderView: View {
     @State var errorMessage: String? = nil
     var body: some View {
         VStack {
-            if loader.isLoaded {
+            if !loader.isLoaded {
                 ModelLoaderProgressView(
                     name: loader.name,
                     progress: $loader.progress

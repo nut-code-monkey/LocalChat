@@ -12,22 +12,21 @@ struct LocalModelsView: View {
     var body: some View {
         List(ModelLoader.allModels) { loader in
             HStack {
-                Text(loader.name)
-
-                Spacer()
-                if loader.isLoaded {
-                    Image(systemName: "checkmark.square")
-                } else {
-                    Image(systemName: "square.and.arrow.down")
+                ProgressView(value: loader.progress) {
+                    Text(loader.name)
+                } currentValueLabel: {
+                    Text(loader.progress, format: .percent)
                 }
+                .progressViewStyle(.linear)
+                .onTapGesture {
+                    print("Load \(loader.name)")
+                    loader.load()
+                }
+
+                Button("New chat") {}
             }
 
-            if loader.isLoaded {
-                ProgressView("Loading...",
-                             value: loader.progress,
-                             total: 1)
-                .progressViewStyle(.linear)
-            }
+            .padding(.vertical, 5)
         }
     }
 }
