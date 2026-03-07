@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		505A47802F5C9F1200F28C7F /* LocalChatLib in Frameworks */ = {isa = PBXBuildFile; productRef = 505A477F2F5C9F1200F28C7F /* LocalChatLib */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		505A474A2F5C854300F28C7F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				505A47802F5C9F1200F28C7F /* LocalChatLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				505A473E2F5C854100F28C7F /* LocalChat */,
 				505A474C2F5C854300F28C7F /* LocalChatTests */,
 				505A47562F5C854300F28C7F /* LocalChatUITests */,
+				505A476C2F5C9DAC00F28C7F /* Frameworks */,
 				505A473D2F5C854100F28C7F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				505A47532F5C854300F28C7F /* LocalChatUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		505A476C2F5C9DAC00F28C7F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = LocalChat;
 			packageProductDependencies = (
+				505A477F2F5C9F1200F28C7F /* LocalChatLib */,
 			);
 			productName = LocalChat;
 			productReference = 505A473C2F5C854100F28C7F /* LocalChat.app */;
@@ -196,7 +210,7 @@
 			mainGroup = 505A47332F5C854100F28C7F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				505A47682F5C869500F28C7F /* XCLocalSwiftPackageReference "LocalChatLib" */,
+				505A477E2F5C9F1200F28C7F /* XCLocalSwiftPackageReference "LocalChatLib" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 505A473D2F5C854100F28C7F /* Products */;
@@ -620,11 +634,18 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		505A47682F5C869500F28C7F /* XCLocalSwiftPackageReference "LocalChatLib" */ = {
+		505A477E2F5C9F1200F28C7F /* XCLocalSwiftPackageReference "LocalChatLib" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalChatLib;
 		};
 /* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		505A477F2F5C9F1200F28C7F /* LocalChatLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocalChatLib;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 505A47342F5C854100F28C7F /* Project object */;
 }
