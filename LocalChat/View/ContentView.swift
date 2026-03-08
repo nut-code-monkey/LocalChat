@@ -34,7 +34,7 @@ struct ContentView: View {
                     }
                 }
 
-                .navigationDestination(for: LocalChat.self) { chat in
+                .navigationDestination(for: Chat.self) { chat in
                     ChatView(chat: chat)
                 }
 

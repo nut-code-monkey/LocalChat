@@ -12,7 +12,7 @@ import Foundation
 public final class ChatManager {
     public static var shared = ChatManager()
 
-    public var chats: [LocalChat] = []
+    public var chats: [Chat] = []
 
     private init() {}
 

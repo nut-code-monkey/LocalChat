@@ -11,7 +11,7 @@ import LocalChatLib
 internal import MLXLMCommon
 
 struct ChatView: View {
-    @State var chat: LocalChat
+    @State var chat: LocalChatLib.Chat
 
     var body: some View {
         SpeziChat.ChatView(

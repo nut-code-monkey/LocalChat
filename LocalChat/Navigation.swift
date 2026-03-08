@@ -16,7 +16,7 @@ final class Navigation {
         path.append(loader)
     }
 
-    func existing(chat: LocalChat) {
+    func existing(chat: Chat) {
         path.append(chat)
     }
 }

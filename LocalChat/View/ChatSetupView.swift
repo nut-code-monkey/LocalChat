@@ -10,7 +10,7 @@ import LocalChatLib
 
 struct ChatSetupView: View {
     @State var loader: ModelLoader
-    @State var result: Result<LocalChat, Error>? = nil
+    @State var result: Result<Chat, Error>? = nil
     var body: some View {
         VStack {
             switch result {

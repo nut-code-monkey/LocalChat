@@ -10,17 +10,14 @@ import MLXLMCommon
 
 @MainActor
 @Observable
-public class LocalChat: Identifiable {
+public class Chat: Identifiable {
     public let id: UUID
 
-    private var _name: String = String(localized: "New chat")
-    public var name: String {
-        get { _name }
-        set { _name = name } // TODO: - persistent chat savings
-    }
+    // TODO: - persistent chat savings
+    public var name: String = String(localized: "Chat \(Date.now)")
 
     // TODO: - make chats list persistent storage
-    private static var currentAppSessionChats = [LocalChat]()
+    private static var currentAppSessionChats = [Chat]()
     public static func loadAllChats() async {
         currentAppSessionChats
     }
@@ -34,13 +31,13 @@ public class LocalChat: Identifiable {
         // TODO: - change name according to first user message
         self.session = session
 
-        LocalChat.currentAppSessionChats.append(self)
+        Chat.currentAppSessionChats.append(self)
     }
 
 
 
     // TODO: - local chat messages persistent storage
-    public var messages = [Chat.Message]()
+    public var messages = [MLXLMCommon.Chat.Message]()
 
     private var task: Task<Void, Error>?
     public var isBusy: Bool {
@@ -67,7 +64,7 @@ public class LocalChat: Identifiable {
     }
 }
 
-extension Chat.Message: Equatable {
+extension MLXLMCommon.Chat.Message: Equatable {
     public static func == (lhs: MLXLMCommon.Chat.Message, rhs: MLXLMCommon.Chat.Message) -> Bool {
         lhs.role == rhs.role
         && lhs.content == rhs.content
@@ -77,8 +74,8 @@ extension Chat.Message: Equatable {
     }
 }
 
-extension LocalChat: @MainActor Equatable, @MainActor Hashable {
-    public static func == (lhs: LocalChat, rhs: LocalChat) -> Bool {
+extension Chat: @MainActor Equatable, @MainActor Hashable {
+    public static func == (lhs: Chat, rhs: Chat) -> Bool {
         lhs.messages == rhs.messages && lhs.id == rhs.id
     }
 

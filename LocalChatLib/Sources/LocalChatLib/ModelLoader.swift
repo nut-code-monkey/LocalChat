@@ -47,9 +47,9 @@ public class ModelLoader: Identifiable {
     public func newChat(
         systemPrompt: String = String(localized: ""),
         generateParameters: GenerateParameters = GenerateParameters(temperature: 0.75)
-    ) async throws -> LocalChat {
+    ) async throws -> Chat {
         let container = try await modelContainer()
-        let chat = await LocalChat(
+        let chat = await Chat(
             session: ChatSession(
                 container,
                 instructions: systemPrompt,
