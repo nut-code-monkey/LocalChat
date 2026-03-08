@@ -16,28 +16,10 @@ struct ChatView: View {
 
     var body: some View {
         SpeziChat.ChatView(
-            Binding<SpeziChat.Chat>(
-                get: {
-                    chat.messages.map { message in
-                        ChatEntity(
-                            role: message.role.speziChatRole,
-                            content: message.content
-                        )
-                    }
-                },
-                set: { messages in
-                    guard let userInput = messages.last, userInput.role == .user else { return }
-                    guard userInput.content != lastHandledUserInput else { return }
-
-                    lastHandledUserInput = userInput.content
-                    chat.generateAnswer(from: userInput.content)
-                }
-            ),
+            Binding<[ChatEntity]>(get: messages, set: setMessages),
             disableInput: chat.isBusy,
         )
-        .onDisappear {
-            chat.cancel()
-        }
+        .onDisappear(perform: chat.cancel)
         .alert(
             "Generation error",
             isPresented: Binding(
@@ -56,6 +38,18 @@ struct ChatView: View {
             Text(chat.lastErrorDescription ?? "Unknown error")
         }
         .navigationTitle("\(chat.name) with \(chat.modelName)")
+    }
+
+    private func messages() -> [ChatEntity] {
+        chat.messages.map { .init(role: $0.role.speziChatRole, content: $0.content) }
+    }
+
+    private func setMessages(_ messages: [ChatEntity]) {
+        guard let userInput = messages.last, userInput.role == .user else { return }
+        guard userInput.content != lastHandledUserInput else { return }
+
+        lastHandledUserInput = userInput.content
+        chat.generateAnswer(from: userInput.content)
     }
 }
 
