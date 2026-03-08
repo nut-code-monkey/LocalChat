@@ -10,17 +10,17 @@ import LocalChatLib
 
 struct ChatsListView: View {
     @Environment(\.navigation) private var navigation
-    
+
     let newChat: () -> Void
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Button("New chat", systemImage: "plus.circle", action: newChat)
-            
+
             Text("Active chats:")
-            
+
             ForEach(ChatManager.shared.chats, id: \.id) { chat in
-                Button(chat.name) { navigation.push(chat: chat) }
+                Button(chat.name) { navigation.existing(chat: chat) }
             }
             Spacer()
         }

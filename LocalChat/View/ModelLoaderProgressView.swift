@@ -21,6 +21,7 @@ struct ModelLoaderProgressView: View {
                 .progressViewStyle(.linear)
                 .padding()
         }
+        .navigationTitle("Setup new chat")
     }
 }
 

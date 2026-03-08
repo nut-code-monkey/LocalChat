@@ -12,17 +12,12 @@ import LocalChatLib
 final class Navigation {
     var path = NavigationPath()
 
-    enum Chat: Hashable {
-        case loader(ModelLoader)
-        case existing(LocalChat)
+    func newChat(with loader: ModelLoader) {
+        path.append(loader)
     }
 
-    func push(loader: ModelLoader) {
-        path.append(Chat.loader(loader))
-    }
-
-    func push(chat: LocalChat) {
-        path.append(Chat.existing(chat))
+    func existing(chat: LocalChat) {
+        path.append(chat)
     }
 }
 

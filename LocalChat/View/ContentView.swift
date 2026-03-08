@@ -17,31 +17,39 @@ struct ContentView: View {
             ChatsListView { isSelectModels = true }
         } detail: {
             NavigationStack(path: $navigation.path) {
-                ModelSelectionView(view: .full)
-                    .toolbar {
-                        ToolbarItem(placement: .primaryAction) {
-                            Button("New Chat", systemImage: "plus.circle") {
-                                isSelectModels = true
-                            }
-                        }
+                List(ModelLoader.allModels) { model in
+                    ProgressView(value: model.progress) {
+                        Text(model.name)
+                    } currentValueLabel: {
+                        Text(model.progress, format: .percent)
                     }
+                    .progressViewStyle(.linear)
+                }
 
-                    .navigationDestination(for: Navigation.Chat.self) { route in
-                        switch route {
-                        case .loader(let loader):
-                            ChatSetupView(loader: loader)
-                        case .existing(let chat):
-                            ChatView(chat: chat)
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button("New Chat", systemImage: "plus.circle") {
+                            isSelectModels = true
                         }
                     }
+                }
+
+                .navigationDestination(for: LocalChat.self) { chat in
+                    ChatView(chat: chat)
+                }
+
+                .navigationDestination(for: ModelLoader.self) { loader in
+                    ChatSetupView(loader: loader)
+                }
             }
         }
-        .navigationTitle("Models")
+        .navigationTitle("Models loaded:")
         .sheet(isPresented: $isSelectModels) {
-            ModelSelectionView(view: .compact)
+            ModelSelectionView()
         }
         .environment(\.navigation, navigation)
     }
+
 }
 
 #Preview {
