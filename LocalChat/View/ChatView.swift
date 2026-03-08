@@ -12,6 +12,7 @@ internal import MLXLMCommon
 
 struct ChatView: View {
     @State var chat: LocalChatLib.Chat
+    @State private var lastHandledUserInput: String?
 
     var body: some View {
         SpeziChat.ChatView(
@@ -24,16 +25,35 @@ struct ChatView: View {
                         )
                     }
                 },
-                set: { messages in 
-                    if let userInput = messages.last, userInput.role == .user {
-                        chat.generateAnswer(from: userInput.content)
-                    }
+                set: { messages in
+                    guard let userInput = messages.last, userInput.role == .user else { return }
+                    guard userInput.content != lastHandledUserInput else { return }
+
+                    lastHandledUserInput = userInput.content
+                    chat.generateAnswer(from: userInput.content)
                 }
             ),
             disableInput: chat.isBusy,
         )
         .onDisappear {
             chat.cancel()
+        }
+        .alert(
+            "Generation error",
+            isPresented: Binding(
+                get: { chat.lastErrorDescription != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        chat.lastErrorDescription = nil
+                    }
+                }
+            )
+        ) {
+            Button("OK", role: .cancel) {
+                chat.lastErrorDescription = nil
+            }
+        } message: {
+            Text(chat.lastErrorDescription ?? "Unknown error")
         }
         .navigationTitle("\(chat.name) with \(chat.modelName)")
     }

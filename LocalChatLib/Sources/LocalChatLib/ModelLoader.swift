@@ -28,8 +28,10 @@ public class ModelLoader: Identifiable {
         case loaded(ModelContainer)
     }
 
+    public nonisolated let id: String
     public let model: ModelConfiguration
     public init(model: ModelConfiguration) {
+        self.id = model.name
         self.model = model
     }
 
@@ -76,10 +78,15 @@ public class ModelLoader: Identifiable {
                 }
             }
             self.state = .loading(task)
-            let container = try await task.value
-
-            self.state = .loaded(container)
-            return container
+            do {
+                let container = try await task.value
+                self.state = .loaded(container)
+                return container
+            } catch {
+                self.state = .notLoaded
+                self.progress = 0
+                throw error
+            }
 
         case .loading(let task):
             return try await task.value
@@ -111,14 +118,10 @@ extension ModelLoader.State: Equatable, Hashable {
 
 extension ModelLoader: @MainActor Equatable, @MainActor Hashable {
     public static func == (lhs: LocalChatLib.ModelLoader, rhs: LocalChatLib.ModelLoader) -> Bool {
-        lhs.name == rhs.name &&
-        lhs.state == rhs.state &&
-        lhs.progress == rhs.progress
+        lhs.id == rhs.id
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-        hasher.combine(state)
-        hasher.combine(progress)
+        hasher.combine(id)
     }
 }

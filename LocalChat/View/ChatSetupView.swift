@@ -11,6 +11,9 @@ import LocalChatLib
 struct ChatSetupView: View {
     @State var loader: ModelLoader
     @State var result: Result<Chat, Error>? = nil
+    @State private var setupTask: Task<Void, Never>?
+    @State private var requestID = UUID()
+
     var body: some View {
         VStack {
             switch result {
@@ -31,14 +34,26 @@ struct ChatSetupView: View {
             }
         }
         .task(newChat)
+        .onDisappear {
+            setupTask?.cancel()
+            setupTask = nil
+        }
     }
 
     private func newChat() {
-        Task { @MainActor in
+        setupTask?.cancel()
+        result = nil
+
+        let currentRequestID = UUID()
+        requestID = currentRequestID
+
+        setupTask = Task { @MainActor in
             do {
-                result = nil
-                result = .success(try await loader.newChat())
+                let chat = try await loader.newChat()
+                guard requestID == currentRequestID else { return }
+                result = .success(chat)
             } catch {
+                guard requestID == currentRequestID else { return }
                 result = .failure(error)
             }
         }
