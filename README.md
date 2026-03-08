@@ -31,4 +31,4 @@ LocalChat is a lightweight SwiftUI app that demonstrates a simple local-first ch
 
 ## License
 
-This project is provided as-is for demonstration purposes. Add your preferred license here.
+This project is provided as-is for demonstration purposes.
