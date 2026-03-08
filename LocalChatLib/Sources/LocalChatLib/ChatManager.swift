@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 @Observable
 public final class ChatManager {
-    public static var shared = ChatManager()
+    public static let shared = ChatManager()
 
     public var chats: [Chat] = []
 

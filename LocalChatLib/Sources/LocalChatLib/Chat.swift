@@ -14,7 +14,7 @@ public class Chat: Identifiable {
     public let id: UUID
 
     // TODO: - persistent chat savings
-    public var name: String = String(localized: "Chat \(Date.now)")
+    public var name: String = "Chat \(Date.now.formatted(date: .numeric, time: .shortened))"
 
     private var session: ChatSession // MLX session
     public let modelName: String
@@ -67,7 +67,7 @@ public class Chat: Identifiable {
     }
 }
 
-extension MLXLMCommon.Chat.Message: Equatable {
+extension MLXLMCommon.Chat.Message: @retroactive Equatable {
     public static func == (lhs: MLXLMCommon.Chat.Message, rhs: MLXLMCommon.Chat.Message) -> Bool {
         lhs.role == rhs.role
         && lhs.content == rhs.content

@@ -39,6 +39,7 @@ public class ModelLoader: Identifiable {
         get { model.name.components(separatedBy: "/").last ?? model.name }
     }
     public var progress = 0.0
+    public var lastErrorDescription: String?
     public var isLoaded: Bool {
         switch state {
         case .notLoaded, .loading: false
@@ -51,7 +52,7 @@ public class ModelLoader: Identifiable {
         generateParameters: GenerateParameters = GenerateParameters(temperature: 0.75)
     ) async throws -> Chat {
         let container = try await modelContainer()
-        let chat = await Chat(
+        let chat = Chat(
             session: ChatSession(
                 container,
                 instructions: systemPrompt,
@@ -62,8 +63,19 @@ public class ModelLoader: Identifiable {
         return chat
     }
 
-    public func load() {
-        Task { try? await modelContainer() }
+    public func load() async throws {
+        lastErrorDescription = nil
+        _ = try await modelContainer()
+    }
+
+    public func loadInBackground() {
+        Task {
+            do {
+                try await load()
+            } catch {
+                self.lastErrorDescription = error.localizedDescription
+            }
+        }
     }
 
     // TODO: - model container cashing
