@@ -8,43 +8,44 @@
 import SwiftUI
 import LocalChatLib
 
+enum NewChat {
+    case chat(LocalChat)
+    case error(String)
+}
+
 struct ModelLoaderView: View {
     @State var loader: ModelLoader
-    @State var chat: LocalChat? = nil
-    @State var errorMessage: String? = nil
+    @State var result: Result<LocalChat, Error>? = nil
     var body: some View {
         VStack {
-            if !loader.isLoaded {
+            switch result {
+
+            case let .success(chat):
+                LocalChatView(chat: chat)
+
+            case let .failure(error):
+                ModelLoaderRetryView(
+                    errorMessage: error.localizedDescription,
+                    action: newChat
+                )
+
+            case nil:
                 ModelLoaderProgressView(
                     name: loader.name,
                     progress: $loader.progress
                 )
-
-            } else {
-                if let chat {
-                    LocalChatView(chat: chat)
-
-                } else if let errorMessage {
-                    ModelLoaderRetryView(
-                        errorMessage: errorMessage,
-                        action: getChat
-                    )
-                }
             }
         }
-        .frame(minWidth: 300, minHeight: 300)
-        .task { await getChat() }
+        .task { await newChat() }
     }
 
-    private func getChat() async {
+    private func newChat() async {
         do {
-            chat = try await loader.localChat(systemPrompt: "")
-            errorMessage = nil
-            print("get chat")
+            result = nil
+            result =
+                .success(try await loader.newChat())
         } catch {
-            chat = nil
-            errorMessage = error.localizedDescription
-            print("error: \(error.localizedDescription)")
+            result = .failure(error)
         }
     }
 }

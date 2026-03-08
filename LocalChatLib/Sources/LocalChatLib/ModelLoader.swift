@@ -21,22 +21,19 @@ public class ModelLoader: Identifiable {
         ModelLoader(model: $0)
     }
 
+    private var state: State = .notLoaded
     enum State {
         case notLoaded
         case loading(Task<ModelContainer, Error>)
         case loaded(ModelContainer)
     }
 
-    private var state: State = .notLoaded
-
     public let model: ModelConfiguration
     public init(model: ModelConfiguration) {
         self.model = model
     }
 
-    public var name: String {
-        get { model.name }
-    }
+    public var name: String { get { model.name } }
     public var progress = 0.0
     public var isLoaded: Bool {
         switch state {
@@ -45,26 +42,22 @@ public class ModelLoader: Identifiable {
         }
     }
 
-    public func localChat(
-        systemPrompt: String,
+    public func newChat(
+        systemPrompt: String = String(localized: ""),
         generateParameters: GenerateParameters = GenerateParameters(temperature: 0.75)
     ) async throws -> LocalChat {
-        let container = try await modelContainer()
-        let session = ChatSession(
-            container,
+        return LocalChat(session: ChatSession(
+            try await modelContainer(),
             instructions: systemPrompt,
             generateParameters: generateParameters
-        )
-
-        // TODO: - local chat messages persistent storage
-        return LocalChat(session: session)
+        ))
     }
 
     public func load() {
         Task { try? await modelContainer() }
     }
 
-    // TODO: - model container caching
+    // TODO: - model container cashing
     private func modelContainer() async throws -> ModelContainer {
         switch self.state {
         case .notLoaded:
