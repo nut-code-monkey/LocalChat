@@ -1,5 +1,5 @@
 //
-//  LocalChatsListView.swift
+//  ChatsListView.swift
 //  LocalChat
 //
 //  Created by Максим Лунін on 07.03.2026.
@@ -8,23 +8,19 @@
 import SwiftUI
 import LocalChatLib
 
-struct LocalChatsListView: View {
+struct ChatsListView: View {
     @Environment(\.navigation) private var navigation
-
-    let newChatAction: () -> Void
-
+    
+    let newChat: () -> Void
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Button(
-                "New chat",
-                systemImage: "plus.circle",
-                action: newChatAction
-            )
+            Button("New chat", systemImage: "plus.circle", action: newChat)
+            
             Text("Active chats:")
+            
             ForEach(ChatManager.shared.chats, id: \.id) { chat in
-                Button(chat.name) {
-                    navigation.push(chat: chat)
-                }
+                Button(chat.name) { navigation.push(chat: chat) }
             }
             Spacer()
         }
@@ -36,7 +32,7 @@ struct LocalChatsListView: View {
 #Preview {
     @Previewable @State var navigation = Navigation()
     NavigationStack(path: $navigation.path) {
-        LocalChatsListView {
+        ChatsListView {
             print("New chat button clicked")
         }
     }

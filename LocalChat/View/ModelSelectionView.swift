@@ -12,11 +12,29 @@ struct ModelSelectionView: View {
     @Environment(\.navigation) private var navigation
     @Environment(\.dismiss) private var dismiss
 
-    enum Info {
+    enum Mode {
         case full
         case compact
     }
-    var info: Info
+    var view: Mode
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Select model for new chat:")
+            ForEach(ModelLoader.allModels) { loader in
+                switch view {
+                case .full:
+                    loaderView(for: loader)
+                        .onTapGesture { select(loader) }
+
+                case .compact:
+                    Button(loader.name) { select(loader) }
+                }
+            }
+            Spacer()
+        }
+        .padding()
+    }
 
     private func select(_ loader: ModelLoader) {
         loader.load()
@@ -24,45 +42,25 @@ struct ModelSelectionView: View {
         dismiss()
     }
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text("Select model for new chat:")
-            ForEach(ModelLoader.allModels) { loader in
-                Group {
-                    switch info {
-                    case .full:
-                        ZStack {
-                            ProgressView(value: loader.progress) {
-                                Text(loader.name)
-                            } currentValueLabel: {
-                                Text(loader.progress, format: .percent)
-                            }
-                            .progressViewStyle(.linear)
-                            .padding(12)
-                        }
-                        .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(Color.secondary.opacity(0.4), lineWidth: 1)
-                        )
-                        .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        .onTapGesture { select(loader) }
-
-                    case .compact:
-                        Button(loader.name) { select(loader) }
-                    }
-                }
-            }
-            Spacer()
+    private func loaderView(for loader: ModelLoader) -> some View {
+        ZStack {
+            ProgressView(value: loader.progress) { Text(loader.name) }
+            currentValueLabel: { Text(loader.progress, format: .percent) }
+                .progressViewStyle(.linear)
+                .padding(12)
         }
-        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(Color.secondary.opacity(0.4), lineWidth: 1)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
-
 
 #Preview("Compact view") {
     @Previewable @State var navigation = Navigation()
     NavigationStack(path: $navigation.path) {
-        ModelSelectionView(info: .compact)
+        ModelSelectionView(view: .compact)
     }
     .environment(\.navigation, navigation)
 }
@@ -70,7 +68,7 @@ struct ModelSelectionView: View {
 #Preview("Full view") {
     @Previewable @State var navigation = Navigation()
     NavigationStack(path: $navigation.path) {
-        ModelSelectionView(info: .full)
+        ModelSelectionView(view: .full)
     }
     .environment(\.navigation, navigation)
 }
