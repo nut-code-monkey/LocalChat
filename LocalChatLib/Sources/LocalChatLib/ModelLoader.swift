@@ -17,11 +17,17 @@ public class ModelLoader: Identifiable {
         LLMRegistry.gemma3_1B_qat_4bit,
         LLMRegistry.qwen3_0_6b_4bit
 
-    ].map{
+    ].map {
         ModelLoader(model: $0)
     }
 
+    typealias ContainerLoader = (ModelConfiguration, @escaping @Sendable (Double) -> Void) async throws -> ModelContainer
+    typealias ChatFactory = @MainActor (@escaping @MainActor () async throws -> ChatSession, String) async throws -> Chat
+
     private var state: State = .notLoaded
+    private let containerLoader: ContainerLoader
+    private let chatFactory: ChatFactory
+
     enum State {
         case notLoaded
         case loading(Task<ModelContainer, Error>)
@@ -30,16 +36,50 @@ public class ModelLoader: Identifiable {
 
     public nonisolated let id: String
     public let model: ModelConfiguration
+
     public init(model: ModelConfiguration) {
         self.id = model.name
         self.model = model
+        self.containerLoader = ModelLoader.liveContainerLoader
+        self.chatFactory = ModelLoader.liveChatFactory
+    }
+
+    init(
+        model: ModelConfiguration,
+        containerLoader: @escaping ContainerLoader,
+        chatFactory: @escaping ChatFactory = ModelLoader.liveChatFactory
+    ) {
+        self.id = model.name
+        self.model = model
+        self.containerLoader = containerLoader
+        self.chatFactory = chatFactory
+    }
+
+    nonisolated private static func liveContainerLoader(
+        _ configuration: ModelConfiguration,
+        _ progressHandler: @escaping @Sendable (Double) -> Void
+    ) async throws -> ModelContainer {
+        try await loadModelContainer(configuration: configuration) { progress in
+            progressHandler(progress.fractionCompleted)
+        }
+    }
+
+    @MainActor
+    private static func liveChatFactory(
+        _ makeSession: @escaping @MainActor () async throws -> ChatSession,
+        _ modelName: String
+    ) async throws -> Chat {
+        let session = try await makeSession()
+        return Chat(session: session, modelName: modelName)
     }
 
     public var name: String {
-        get { model.name.components(separatedBy: "/").last ?? model.name }
+        model.name.components(separatedBy: "/").last ?? model.name
     }
+
     public var progress = 0.0
     public var lastErrorDescription: String?
+
     public var isLoaded: Bool {
         switch state {
         case .notLoaded, .loading: false
@@ -51,14 +91,15 @@ public class ModelLoader: Identifiable {
         systemPrompt: String = String(localized: ""),
         generateParameters: GenerateParameters = GenerateParameters(temperature: 0.75)
     ) async throws -> Chat {
-        let container = try await modelContainer()
-        let chat = Chat(
-            session: ChatSession(
+        let chat = try await chatFactory({
+            let container = try await self.modelContainer()
+            return ChatSession(
                 container,
                 instructions: systemPrompt,
                 generateParameters: generateParameters
-            ),
-            modelName: name)
+            )
+        }, name)
+
         ChatManager.shared.chats.append(chat)
         return chat
     }
@@ -83,9 +124,9 @@ public class ModelLoader: Identifiable {
         switch self.state {
         case .notLoaded:
             let task = Task {
-                try await loadModelContainer(configuration: model) { value in
+                try await containerLoader(model) { fractionCompleted in
                     Task { @MainActor in
-                        self.progress = value.fractionCompleted
+                        self.progress = fractionCompleted
                     }
                 }
             }

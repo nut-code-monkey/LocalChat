@@ -16,17 +16,28 @@ public class Chat: Identifiable {
     // TODO: - persistent chat savings
     public var name: String = "Chat \(Date.now.formatted(date: .numeric, time: .shortened))"
 
-    private var session: ChatSession // MLX session
+    private let streamResponse: (String) -> AsyncThrowingStream<String, Error>
     public let modelName: String
+
     init(session: ChatSession, modelName: String, id: UUID = UUID()) {
         self.modelName = modelName
         self.id = id
 
         // TODO: - change name according to first user message
-        self.session = session
+        self.streamResponse = { userInput in
+            session.streamResponse(to: userInput)
+        }
     }
 
-
+    init(
+        modelName: String,
+        id: UUID = UUID(),
+        streamResponse: @escaping (String) -> AsyncThrowingStream<String, Error>
+    ) {
+        self.modelName = modelName
+        self.id = id
+        self.streamResponse = streamResponse
+    }
 
     // TODO: - local chat messages persistent storage
     public var messages = [MLXLMCommon.Chat.Message]()
@@ -49,7 +60,7 @@ public class Chat: Identifiable {
             defer { self.task = nil }
 
             do {
-                for try await partial in session.streamResponse(to: userInput) {
+                for try await partial in streamResponse(userInput) {
                     self.messages[response].content += partial
                 }
             } catch is CancellationError {
