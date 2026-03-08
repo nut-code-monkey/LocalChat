@@ -21,12 +21,14 @@ public class LocalChat: Identifiable {
 
     // TODO: - make chats list persistent storage
     private static var currentAppSessionChats = [LocalChat]()
-    public static func allChats() async throws -> [LocalChat] {
+    public static func loadAllChats() async {
         currentAppSessionChats
     }
 
     private var session: ChatSession // MLX session
-    init(session: ChatSession, id: UUID = UUID()) {
+    public let modelName: String
+    init(session: ChatSession, modelName: String, id: UUID = UUID()) {
+        self.modelName = modelName
         self.id = id
 
         // TODO: - change name according to first user message
@@ -34,6 +36,8 @@ public class LocalChat: Identifiable {
 
         LocalChat.currentAppSessionChats.append(self)
     }
+
+
 
     // TODO: - local chat messages persistent storage
     public var messages = [Chat.Message]()
@@ -73,8 +77,12 @@ extension Chat.Message: Equatable {
     }
 }
 
-extension LocalChat: @MainActor Equatable {
+extension LocalChat: @MainActor Equatable, @MainActor Hashable {
     public static func == (lhs: LocalChat, rhs: LocalChat) -> Bool {
         lhs.messages == rhs.messages && lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

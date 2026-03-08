@@ -33,7 +33,9 @@ public class ModelLoader: Identifiable {
         self.model = model
     }
 
-    public var name: String { get { model.name } }
+    public var name: String {
+        get { model.name.components(separatedBy: "/").last ?? model.name }
+    }
     public var progress = 0.0
     public var isLoaded: Bool {
         switch state {
@@ -46,11 +48,16 @@ public class ModelLoader: Identifiable {
         systemPrompt: String = String(localized: ""),
         generateParameters: GenerateParameters = GenerateParameters(temperature: 0.75)
     ) async throws -> LocalChat {
-        return LocalChat(session: ChatSession(
-            try await modelContainer(),
-            instructions: systemPrompt,
-            generateParameters: generateParameters
-        ))
+        let container = try await modelContainer()
+        let chat = await LocalChat(
+            session: ChatSession(
+                container,
+                instructions: systemPrompt,
+                generateParameters: generateParameters
+            ),
+            modelName: name)
+        ChatManager.shared.chats.append(chat)
+        return chat
     }
 
     public func load() {

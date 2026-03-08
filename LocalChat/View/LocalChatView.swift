@@ -52,6 +52,7 @@ struct LocalChatView: View {
         .onDisappear {
             chat.cancel()
         }
+        .navigationTitle("\(chat.name) with \(chat.modelName)")
     }
 }
 

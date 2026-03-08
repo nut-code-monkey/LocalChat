@@ -9,26 +9,36 @@ import SwiftUI
 import LocalChatLib
 
 struct LocalChatsListView: View {
-    @State var chats: [LocalChat]? = nil
+    @Environment(\.navigation) private var navigation
+
     let newChatAction: () -> Void
-    let selectChatAction: (LocalChat) -> Void
 
     var body: some View {
-
-        if let chats {
-            List(chats, id: \.id) { chat in
-                Text(chat.name)
+        VStack(alignment: .leading, spacing: 10) {
+            Button(
+                "New chat",
+                systemImage: "plus.circle",
+                action: newChatAction
+            )
+            Text("Active chats:")
+            ForEach(ChatManager.shared.chats, id: \.id) { chat in
+                Button(chat.name) {
+                    navigation.push(chat: chat)
+                }
             }
-        } else {
-            Text("Loading...")
+            Spacer()
         }
+        .padding()
+        .task { ChatManager.shared.updateChatsList() }
     }
 }
 
 #Preview {
-    LocalChatsListView(
-        newChatAction: {},
-        selectChatAction: {chat in
+    @Previewable @State var navigation = Navigation()
+    NavigationStack(path: $navigation.path) {
+        LocalChatsListView {
+            print("New chat button clicked")
         }
-    )
+    }
+    .environment(\.navigation, navigation)
 }

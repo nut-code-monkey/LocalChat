@@ -11,29 +11,36 @@ struct ModelLoaderProgressView: View {
     @State var name: String
     @Binding var progress: Double
     var body: some View {
-        ProgressView(value: progress) {
-            Text("Loading \(name)...")
-        } currentValueLabel: {
-            Text(progress, format: .percent)
+        VStack{
+            Text("Loading model for new chat...")
+            ProgressView()
+            ProgressView(value: progress) {
+                Text(name)
+            } currentValueLabel: {
+                Text(progress, format: .percent)
+            }
+            .progressViewStyle(.linear)
+            .padding()
         }
-        .progressViewStyle(.linear)
-        .padding()
     }
 }
 
 #Preview {
-    ModelLoaderProgressView(
-        name: "Test/Model",
-        progress: .constant(0)
-    )
+    VStack {
+        ModelLoaderProgressView(
+            name: "Test Model",
+            progress: .constant(0)
+        )
 
-    ModelLoaderProgressView(
-        name: "Test/Model",
-        progress: .constant(0.5)
-    )
+        ModelLoaderProgressView(
+            name: "Test Model",
+            progress: .constant(0.5)
+        )
 
-    ModelLoaderProgressView(
-        name: "Test/Model",
-        progress: .constant(1)
-    )
+        ModelLoaderProgressView(
+            name: "Test Model",
+            progress: .constant(1)
+        )
+    }
+    .frame(minHeight: 500)
 }
